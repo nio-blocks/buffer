@@ -1,8 +1,8 @@
-from ..buffer.buffer_block import Buffer
+from ..buffer_block import Buffer
 from unittest.mock import MagicMock
-from nio.util.support.block_test_case import NIOBlockTestCase
-from nio.common.signal.base import Signal
-from nio.modules.threading import Event
+from nio.testing.block_test_case import NIOBlockTestCase
+from nio.signal.base import Signal
+from threading import Event
 
 
 class EventBuffer(Buffer):
@@ -64,19 +64,4 @@ class TestBuffer(NIOBlockTestCase):
         event.wait(1.3)
         # third emit notifies second group and third group
         self.assert_num_signals_notified(14, block)
-        block.stop()
-
-    def test_timeout(self):
-        event = Event()
-        block = EventBuffer(event)
-        block._backup = MagicMock()
-        self.configure_block(block, {
-            "interval": {
-                "milliseconds": 200
-            },
-            "timeout": True
-        })
-        block.start()
-        event.wait(.3)
-        self.assert_num_signals_notified(1, block)
         block.stop()
