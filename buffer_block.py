@@ -15,7 +15,7 @@ from nio.command import command
 @command("emit")
 class Buffer(Persistence, Block):
 
-    interval = TimeDeltaProperty(title='Buffer Interval', default=0)
+    interval = TimeDeltaProperty(title='Buffer Interval', allow_none=True)
     interval_duration = TimeDeltaProperty(title='Interval Duration',
                                           allow_none=True)
 
