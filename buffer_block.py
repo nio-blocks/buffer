@@ -4,18 +4,16 @@ from threading import Lock
 from time import time
 from nio.block.base import Block
 from nio.block.mixins.persistence.persistence import Persistence
-from nio.util.discovery import discoverable
-from nio.properties.bool import BoolProperty
 from nio.properties.timedelta import TimeDeltaProperty
-from nio.properties.string import StringProperty
 from nio.modules.scheduler import Job
 from nio.signal.base import Signal
+from nio.command import command
 
 
-@discoverable
+@command("emit")
 class Buffer(Persistence, Block):
 
-    interval = TimeDeltaProperty(title='Buffer Interval', default=0)
+    interval = TimeDeltaProperty(title='Buffer Interval', allow_none=True)
     interval_duration = TimeDeltaProperty(title='Interval Duration',
                                           allow_none=True)
 
@@ -30,22 +28,26 @@ class Buffer(Persistence, Block):
         return ['_last_emission', '_cache']
 
     def start(self):
-        now = datetime.utcnow()
-        latest = self._last_emission or now
-        delta = self.interval() - (now - latest)
-        self._emission_job = Job(
-            self.emit,
-            delta,
-            False,
-            reset=True
-        )
+        if self.interval():
+            now = datetime.utcnow()
+            latest = self._last_emission or now
+            delta = self.interval() - (now - latest)
+            self._emission_job = Job(
+                self._emit_job,
+                delta,
+                False,
+                reset=True
+            )
 
-    def emit(self, reset=False):
+    def emit(self):
+        self._emit_job()
+
+    def _emit_job(self, reset=False):
         self.logger.debug('Emitting signals')
         if reset:
             self._emission_job.cancel()
             self._emission_job = Job(
-                self.emit,
+                self._emit_job,
                 self.interval(),
                 True
             )
