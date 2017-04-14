@@ -4,9 +4,7 @@ from threading import Lock
 from time import time
 from nio.block.base import Block
 from nio.block.mixins.persistence.persistence import Persistence
-from nio.properties.bool import BoolProperty
 from nio.properties.timedelta import TimeDeltaProperty
-from nio.properties.string import StringProperty
 from nio.modules.scheduler import Job
 from nio.signal.base import Signal
 from nio.command import command
