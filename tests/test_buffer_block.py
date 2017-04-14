@@ -1,5 +1,5 @@
 from ..buffer_block import Buffer
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 from nio.testing.block_test_case import NIOBlockTestCase
 from nio.signal.base import Signal
 from threading import Event
@@ -66,9 +66,9 @@ class TestBuffer(NIOBlockTestCase):
         self.assert_num_signals_notified(14, block)
         block.stop()
 
-    def test_emit_command(self):
+    @patch(Buffer.__module__ + '.Job')
+    def test_emit_command(self, patched_job):
         block = Buffer()
-        block.Job = MagicMock()
         self.configure_block(block, {
             "interval": {
                 "milliseconds": 0
@@ -78,8 +78,8 @@ class TestBuffer(NIOBlockTestCase):
             }
         })
         block.start()
-        self.assertFalse(block.Job.call_count)
         block.process_signals([Signal(), Signal()])
         block.emit()
         self.assert_num_signals_notified(2, block)
         block.stop()
+        self.assertFalse(patched_job.call_count)
