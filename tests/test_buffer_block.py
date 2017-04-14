@@ -69,14 +69,7 @@ class TestBuffer(NIOBlockTestCase):
     @patch(Buffer.__module__ + '.Job')
     def test_emit_command(self, patched_job):
         block = Buffer()
-        self.configure_block(block, {
-            "interval": {
-                "milliseconds": 0
-            },
-            "interval_duration": {
-                "milliseconds": 0
-            }
-        })
+        self.configure_block(block, {})
         block.start()
         block.process_signals([Signal(), Signal()])
         block.emit()
