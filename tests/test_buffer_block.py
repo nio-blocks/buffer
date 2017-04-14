@@ -65,3 +65,21 @@ class TestBuffer(NIOBlockTestCase):
         # third emit notifies second group and third group
         self.assert_num_signals_notified(14, block)
         block.stop()
+
+    def test_emit_command(self):
+        block = Buffer()
+        block.Job = MagicMock()
+        self.configure_block(block, {
+            "interval": {
+                "milliseconds": 0
+            },
+            "interval_duration": {
+                "milliseconds": 0
+            }
+        })
+        block.start()
+        self.assertFalse(block.Job.call_count)
+        block.process_signals([Signal(), Signal()])
+        block.emit()
+        self.assert_num_signals_notified(2, block)
+        block.stop()
