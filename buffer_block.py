@@ -4,7 +4,6 @@ from threading import Lock
 from time import time
 from nio.block.base import Block
 from nio.block.mixins.persistence.persistence import Persistence
-from nio.util.discovery import discoverable
 from nio.properties.bool import BoolProperty
 from nio.properties.timedelta import TimeDeltaProperty
 from nio.properties.string import StringProperty
@@ -31,10 +30,10 @@ class Buffer(Persistence, Block):
         return ['_last_emission', '_cache']
 
     def start(self):
-        now = datetime.utcnow()
-        latest = self._last_emission or now
-        delta = self.interval() - (now - latest)
-        if not self.interval():
+        if self.interval():
+            now = datetime.utcnow()
+            latest = self._last_emission or now
+            delta = self.interval() - (now - latest)
             self._emission_job = Job(
                 self._emit_job,
                 delta,
@@ -43,7 +42,7 @@ class Buffer(Persistence, Block):
             )
 
     def emit(self):
-        self.emit_job()
+        self._emit_job()
 
     def _emit_job(self, reset=False):
         self.logger.debug('Emitting signals')
