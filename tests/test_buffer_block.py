@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch
 from nio.testing.block_test_case import NIOBlockTestCase
 from nio.signal.base import Signal
 from threading import Event
+from nio.block.terminals import DEFAULT_TERMINAL
 
 
 class EventBuffer(Buffer):
@@ -33,6 +34,35 @@ class TestBuffer(NIOBlockTestCase):
         self.assert_num_signals_notified(0, block)
         event.wait(.3)
         self.assert_num_signals_notified(4, block)
+        block.stop()
+
+    def test_buffer_groups(self):
+        event = Event()
+        block = EventBuffer(event)
+        block._backup = MagicMock()
+        self.configure_block(block, {
+            "interval": {
+                "milliseconds": 200
+            },
+            "group_by": "{{ $group }}",
+        })
+        block.start()
+        block.process_signals([
+            Signal({"iama": "signal", "group": "a"}),
+            Signal({"iama": "signal", "group": "b"}),
+            Signal({"iama": "signal", "group": "b"}),
+        ])
+        event.wait(.3)
+        self.assert_num_signals_notified(3, block)
+        self.assertTrue(
+            {"iama": "signal", "group": "a"} in \
+                [n.to_dict() for n in self.last_notified[DEFAULT_TERMINAL]]
+        )
+        self.assertEqual(
+            len([n.to_dict() for n in self.last_notified[DEFAULT_TERMINAL] if \
+                n.to_dict() == {"iama": "signal", "group": "b"}]),
+            2
+        )
         block.stop()
 
     def test_interval_duration(self):
