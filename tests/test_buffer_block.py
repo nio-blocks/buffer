@@ -106,3 +106,27 @@ class TestBuffer(NIOBlockTestCase):
         self.assert_num_signals_notified(2, block)
         block.stop()
         self.assertFalse(patched_job.call_count)
+
+    @patch(Buffer.__module__ + '.Job')
+    def test_emit_command_groups(self, patched_job):
+        block = Buffer()
+        self.configure_block(block, {"group_by": "{{ $group }}"})
+        block.start()
+        block.process_signals([
+            Signal({"iama": "signal", "group": "a"}),
+            Signal({"iama": "signal", "group": "b"}),
+            Signal({"iama": "signal", "group": "b"}),
+        ])
+        block.emit(group="b")
+        self.assert_num_signals_notified(2, block)
+        block.emit(group="a")
+        self.assert_num_signals_notified(3, block)
+        block.process_signals([
+            Signal({"iama": "signal", "group": "a"}),
+            Signal({"iama": "signal", "group": "b"}),
+            Signal({"iama": "signal", "group": "b"}),
+        ])
+        block.emit()
+        self.assert_num_signals_notified(6, block)
+        block.stop()
+        self.assertFalse(patched_job.call_count)
