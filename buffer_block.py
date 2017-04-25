@@ -87,7 +87,7 @@ class Buffer(Persistence, GroupBy, Block):
                     del self._cache[group][cache_time]
                 else:
                     break
-        for cache in sorted(cache_times):
+        for cache in cache_times:
             signals.extend(self._cache[group][cache])
         if not self.interval_duration():
             # Clear cache every time if duration is not set.
