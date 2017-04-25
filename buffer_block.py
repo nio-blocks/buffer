@@ -76,18 +76,18 @@ class Buffer(Persistence, GroupBy, Block):
     def _get_emit_signals_for_group(self, group):
         now = int(time())
         signals = []
+        cache_times = sorted(self._cache[group].keys())
         if self.interval_duration():
             # Remove old signals from cache.
             old = now - int(self.interval_duration().total_seconds())
             self.logger.debug(
                 'Removing signals from cache older than {}'.format(old))
-            cache_times = sorted(self._cache[group].keys())
             for cache_time in cache_times:
                 if cache_time < old:
                     del self._cache[group][cache_time]
                 else:
                     break
-        for cache in self._cache[group]:
+        for cache in sorted(cache_times):
             signals.extend(self._cache[group][cache])
         if not self.interval_duration():
             # Clear cache every time if duration is not set.
