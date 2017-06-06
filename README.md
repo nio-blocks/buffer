@@ -12,7 +12,7 @@ Properties
 
 -   **interval**: Time interval at which signals are emitted.
 -   **interval_duration**: Each *interval* signals will emit going back this amount of time. If unspecifed or 0, then all input signals over the last **interval** will be emitted.
--   **use_persistence** (False): If *True*, use persistence to store the list of signals.
+-   **use_persistence** (default=False): If *True*, use persistence to store the list of signals.
 
 Dependencies
 ----------------
