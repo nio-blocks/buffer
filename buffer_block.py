@@ -33,6 +33,7 @@ class Buffer(Persistence, GroupBy, Block):
         return ['_last_emission', '_cache']
 
     def start(self):
+        # Start emission job on service start if bool property is not checked
         if self.interval() and not self.signal_start():
             now = datetime.utcnow()
             latest = self._last_emission or now
@@ -101,18 +102,16 @@ class Buffer(Persistence, GroupBy, Block):
 
     def process_signals(self, signals):
         self.for_each_group(self.process_group, signals)
+        # Start a new job if property is checked and there is no active job
         if self.signal_start() and not self._active_job:
-            now = datetime.utcnow()
-            latest = self._last_emission or now
-            delta = self.interval()
             self._emission_job = Job(
                 self._emit_job,
-                delta,
+                self.interval(),
                 False,
                 group=None,
                 reset=False,
             )
-            self._active_job = True
+            self._active_job = True # Added flag for active job
 
 
     def process_group(self, signals, key):
