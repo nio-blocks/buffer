@@ -6,6 +6,7 @@ from nio.block.base import Block
 from nio.block.mixins.persistence.persistence import Persistence
 from nio.block.mixins.group_by.group_by import GroupBy
 from nio.properties.timedelta import TimeDeltaProperty
+from nio.properties import BoolProperty
 from nio.modules.scheduler import Job
 from nio.signal.base import Signal
 from nio.command import command
@@ -15,6 +16,7 @@ from nio.command.params.string import StringParameter
 @command("emit", StringParameter("group", default=None, allow_none=True))
 class Buffer(Persistence, GroupBy, Block):
 
+    signal_start = BoolProperty(title='Start Interval On Signal?', default=False)
     interval = TimeDeltaProperty(title='Buffer Interval', allow_none=True)
     interval_duration = TimeDeltaProperty(title='Interval Duration',
                                           allow_none=True)
@@ -25,12 +27,13 @@ class Buffer(Persistence, GroupBy, Block):
         self._cache = defaultdict(lambda: defaultdict(list))
         self._cache_lock = Lock()
         self._emission_job = None
+        self._active_job = False
 
     def persisted_values(self):
         return ['_last_emission', '_cache']
 
     def start(self):
-        if self.interval():
+        if self.interval() and not self.signal_start():
             now = datetime.utcnow()
             latest = self._last_emission or now
             delta = self.interval() - (now - latest)
@@ -57,6 +60,7 @@ class Buffer(Persistence, GroupBy, Block):
             )
         self._last_emission = datetime.utcnow()
         signals = self._get_emit_signals(group)
+        self._active_job = False
         if signals:
             self.logger.debug('Notifying {} signals'.format(len(signals)))
             self.notify_signals(signals)
@@ -97,6 +101,20 @@ class Buffer(Persistence, GroupBy, Block):
 
     def process_signals(self, signals):
         self.for_each_group(self.process_group, signals)
+        if self.signal_start() and not self._active_job:
+            now = datetime.utcnow()
+            latest = self._last_emission or now
+            delta = self.interval()
+            self._emission_job = Job(
+                self._emit_job,
+                delta,
+                False,
+                group=None,
+                reset=False,
+            )
+            self._active_job = True
+        print(self._active_job)
+
 
     def process_group(self, signals, key):
         with self._cache_lock:
