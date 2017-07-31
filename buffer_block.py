@@ -113,7 +113,6 @@ class Buffer(Persistence, GroupBy, Block):
                 reset=False,
             )
             self._active_job = True
-        print(self._active_job)
 
 
     def process_group(self, signals, key):
