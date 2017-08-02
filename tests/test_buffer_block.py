@@ -142,11 +142,13 @@ class TestBuffer(NIOBlockTestCase):
             "signal_start": True
         })
         block.start()
+        event.wait(.1)
+        block.process_signals([Signal()])
+        event.wait(.1)
+        block.process_signals([Signal()])
+        # 200 miliseconds have now passed but the block should have only been active for 100
         self.assert_num_signals_notified(0, block)
         event.wait(.1)
-        block.process_signals([Signal()])
-        event.wait(.1) # 200 miliseconds have now passed but the block should have only been active for 100
-        block.process_signals([Signal()])
-        event.wait(.1)
-        self.assert_num_signals_notified(2, block) # This would be 1 if signal_start is False
+        self.assert_num_signals_notified(2, block)
+        # This would be 1 if signal_start is False
         block.stop()
