@@ -130,3 +130,25 @@ class TestBuffer(NIOBlockTestCase):
         self.assert_num_signals_notified(6, block)
         block.stop()
         self.assertFalse(patched_job.call_count)
+
+    def test_buffer_start_signal(self):
+        event = Event()
+        block = EventBuffer(event)
+        block._backup = MagicMock()
+        self.configure_block(block, {
+            "interval": {
+                "milliseconds": 200
+            },
+            "signal_start": True
+        })
+        block.start()
+        event.wait(.1)
+        block.process_signals([Signal()])
+        event.wait(.1)
+        block.process_signals([Signal()])
+        # 200 miliseconds have now passed but the block should have only been active for 100
+        self.assert_num_signals_notified(0, block)
+        event.wait(.1)
+        self.assert_num_signals_notified(2, block)
+        # This would be 1 if signal_start is False
+        block.stop()
