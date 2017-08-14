@@ -2,13 +2,11 @@ from collections import defaultdict
 from datetime import datetime
 from threading import Lock
 from time import time
+
 from nio.block.base import Block
-from nio.block.mixins.persistence.persistence import Persistence
-from nio.block.mixins.group_by.group_by import GroupBy
-from nio.properties.timedelta import TimeDeltaProperty
-from nio.properties import BoolProperty
+from nio.block.mixins import Persistence, GroupBy
+from nio.properties import BoolProperty, TimeDeltaProperty, VersionProperty
 from nio.modules.scheduler import Job
-from nio.signal.base import Signal
 from nio.command import command
 from nio.command.params.string import StringParameter
 
@@ -16,7 +14,9 @@ from nio.command.params.string import StringParameter
 @command("emit", StringParameter("group", default=None, allow_none=True))
 class Buffer(Persistence, GroupBy, Block):
 
-    signal_start = BoolProperty(title='Start Interval On Signal?', default=False)
+    version = VersionProperty("0.1.0")
+    signal_start = BoolProperty(title='Start Interval On Signal?',
+                                default=False)
     interval = TimeDeltaProperty(title='Buffer Interval', allow_none=True)
     interval_duration = TimeDeltaProperty(title='Interval Duration',
                                           allow_none=True)
@@ -111,8 +111,7 @@ class Buffer(Persistence, GroupBy, Block):
                 group=None,
                 reset=False,
             )
-            self._active_job = True # Added flag for active job
-
+            self._active_job = True  # Added flag for active job
 
     def process_group(self, signals, key):
         with self._cache_lock:
