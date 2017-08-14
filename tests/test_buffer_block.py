@@ -1,11 +1,15 @@
-from ..buffer_block import Buffer
 from unittest.mock import MagicMock, patch
+from threading import Event
+
+from nio.block.terminals import DEFAULT_TERMINAL
 from nio.testing.block_test_case import NIOBlockTestCase
 from nio.signal.base import Signal
-from threading import Event
-from nio.block.terminals import DEFAULT_TERMINAL
+from nio.util.discovery import not_discoverable
+
+from ..buffer_block import Buffer
 
 
+@not_discoverable
 class EventBuffer(Buffer):
 
     def __init__(self, event):
@@ -55,11 +59,11 @@ class TestBuffer(NIOBlockTestCase):
         event.wait(.3)
         self.assert_num_signals_notified(3, block)
         self.assertTrue(
-            {"iama": "signal", "group": "a"} in \
-                [n.to_dict() for n in self.last_notified[DEFAULT_TERMINAL]]
+            {"iama": "signal", "group": "a"} in
+            [n.to_dict() for n in self.last_notified[DEFAULT_TERMINAL]]
         )
         self.assertEqual(
-            len([n.to_dict() for n in self.last_notified[DEFAULT_TERMINAL] if \
+            len([n.to_dict() for n in self.last_notified[DEFAULT_TERMINAL] if
                 n.to_dict() == {"iama": "signal", "group": "b"}]),
             2
         )
@@ -146,7 +150,8 @@ class TestBuffer(NIOBlockTestCase):
         block.process_signals([Signal()])
         event.wait(.1)
         block.process_signals([Signal()])
-        # 200 miliseconds have now passed but the block should have only been active for 100
+        # 200 miliseconds have now passed but the block should have only been
+        # active for 100
         self.assert_num_signals_notified(0, block)
         event.wait(.1)
         self.assert_num_signals_notified(2, block)
