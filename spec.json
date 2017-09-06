@@ -2,6 +2,9 @@
   "nio/Buffer": {
     "version": "0.1.0",
     "description": "Collects all incoming signals and then emits them every **interval**. If **interval_duration** is non-zero, then the signal emitted each **interval** will be all the signals over the last **interval_duration**, not just since the last emit. If **use_persistence** is *True*, then persistence is used to maintain the list of signals between stopping and starting the block.",
+    "categories": [
+      "Signal Flow"
+    ],
     "properties": {
       "backup_interval": {
         "title": "Backup Interval",
