@@ -17,7 +17,9 @@ class Buffer(Persistence, GroupBy, Block):
     version = VersionProperty("0.1.0")
     signal_start = BoolProperty(title='Start Interval On Signal?',
                                 default=False)
-    interval = TimeDeltaProperty(title='Buffer Interval', allow_none=True)
+    interval = TimeDeltaProperty(title='Buffer Interval',
+                                 default={'seconds': 1},
+                                 allow_none=True)
     interval_duration = TimeDeltaProperty(title='Interval Duration',
                                           allow_none=True)
 

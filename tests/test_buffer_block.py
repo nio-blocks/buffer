@@ -103,7 +103,7 @@ class TestBuffer(NIOBlockTestCase):
     @patch(Buffer.__module__ + '.Job')
     def test_emit_command(self, patched_job):
         block = Buffer()
-        self.configure_block(block, {})
+        self.configure_block(block, {"interval": None})
         block.start()
         block.process_signals([Signal(), Signal()])
         block.emit()
@@ -114,7 +114,10 @@ class TestBuffer(NIOBlockTestCase):
     @patch(Buffer.__module__ + '.Job')
     def test_emit_command_groups(self, patched_job):
         block = Buffer()
-        self.configure_block(block, {"group_by": "{{ $group }}"})
+        self.configure_block(block, {
+            "group_by": "{{ $group }}",
+            "interval": None,
+        })
         block.start()
         block.process_signals([
             Signal({"iama": "signal", "group": "a"}),
