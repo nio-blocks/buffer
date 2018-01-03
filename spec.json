@@ -9,7 +9,7 @@
       "backup_interval": {
         "title": "Backup Interval",
         "type": "TimeDeltaType",
-        "description": "",
+        "description": "How often to save persisted data.",
         "default": {
           "seconds": 3600
         }
@@ -37,24 +37,24 @@
       "load_from_persistence": {
         "title": "Load from Persistence?",
         "type": "BoolType",
-        "description": "If *True*, the block\u2019s state will be saved at a block stoppage and reloaded upon restart.",
+        "description": "If *True*, the block's state will be saved at a block stoppage and reloaded upon restart.",
         "default": true
       },
       "signal_start": {
         "title": "Start Interval On Signal?",
         "type": "BoolType",
-        "description": "Start the interval when a signal is received",
+        "description": "Start the interval when a signal is received.",
         "default": false
       }
     },
     "inputs": {
       "default": {
-        "description": ""
+        "description": "Any list of signals."
       }
     },
     "outputs": {
       "default": {
-        "description": "Stored signals going back for the amount of time specified by the configured interval"
+        "description": "Signals stored since the time specified by the **interval_duration**."
       }
     },
     "commands": {
@@ -66,11 +66,11 @@
             "allow_none": true
           }
         },
-        "description": "Emit stored signals immediately"
+        "description": "Emit stored signals immediately."
       },
       "groups": {
         "params": {},
-        "description": "View information on current groups"
+        "description": "View information on current groups."
       }
     }
   }
