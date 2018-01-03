@@ -1,7 +1,7 @@
 {
   "nio/Buffer": {
     "version": "0.1.0",
-    "description": "Collects all incoming signals and then emits them every **interval**. If **interval_duration** is non-zero, then the signal emitted each **interval** will be all the signals over the last **interval_duration**, not just since the last emit. If **use_persistence** is *True*, then persistence is used to maintain the list of signals between stopping and starting the block.",
+    "description": "The Buffer block will collect all incoming signals and emit them every **interval**. If **interval_duration** is non-zero, then the signal emitted each **interval** will be all the signals collected over the last **interval_duration**, not just since the last emit.",
     "categories": [
       "Signal Flow"
     ],
@@ -9,7 +9,7 @@
       "backup_interval": {
         "title": "Backup Interval",
         "type": "TimeDeltaType",
-        "description": "Interval to backup buffer to persistence",
+        "description": "",
         "default": {
           "seconds": 3600
         }
@@ -17,14 +17,16 @@
       "group_by": {
         "title": "Group By",
         "type": "Type",
-        "description": "Specify signal attribute to group incoming signals by",
+        "description": "Signal attribute to define groupings of incoming signals.",
         "default": null
       },
       "interval": {
         "title": "Buffer Interval",
         "type": "TimeDeltaType",
         "description": "Time interval at which signals are emitted.",
-        "default": null
+        "default": {
+          "seconds": 1
+        }
       },
       "interval_duration": {
         "title": "Interval Duration",
@@ -35,7 +37,7 @@
       "load_from_persistence": {
         "title": "Load from Persistence?",
         "type": "BoolType",
-        "description": "If *True*, use persistence to store the list of signals.",
+        "description": "If *True*, the block\u2019s state will be saved at a block stoppage and reloaded upon restart.",
         "default": true
       },
       "signal_start": {
@@ -46,8 +48,8 @@
       }
     },
     "inputs": {
-      "defaults": {
-        "description": "Any list of signals."
+      "default": {
+        "description": ""
       }
     },
     "outputs": {

@@ -1,28 +1,23 @@
 Buffer
 ======
-
-Collects all incoming signals and then emits them every **interval**.
-If **interval_duration** is non-zero, then the signal emitted each **interval** will be all the signals over the last **interval_duration**, not just since the last emit.
-If **use_persistence** is *True*, then persistence is used to maintain the list of signals between stopping and starting the block.
+The Buffer block will collect all incoming signals and emit them every **interval**. If **interval_duration** is non-zero, then the signal emitted each **interval** will be all the signals collected over the last **interval_duration**, not just since the last emit.
 
 Properties
 ----------
-- **backup_interval**: Interval to backup buffer to persistence
-- **group_by**: Specify signal attribute to group incoming signals by
+- **backup_interval**: 
+- **group_by**: Signal attribute to define groupings of incoming signals.
 - **interval**: Time interval at which signals are emitted.
-- **interval_duration**:  Each *interval* signals will emit going back this amount of time. If unspecifed or 0, then all input signals over the last **interval** will be emitted.
-- **load_from_persistence**: If *True*, use persistence to store the list of signals.
-- **signal_start**: start the interval when a signal is received
+- **interval_duration**: Each *interval* signals will emit going back this amount of time. If unspecifed or 0, then all input signals over the last **interval** will be emitted.
+- **load_from_persistence**: If *True*, the block’s state will be saved at a block stoppage and reloaded upon restart.
+- **signal_start**: Start the interval when a signal is received
 
 Inputs
 ------
-
-Any list of signals.
+- **default**: 
 
 Outputs
 -------
-
-At the end of every **interval** all input signals over the last **interval_duration** will be emitted. If **interval_duration** is unspecified or 0, then all input signals over the last **interval** will be emitted.
+- **default**: Stored signals going back for the amount of time specified by the configured interval
 
 Commands
 --------
@@ -32,3 +27,4 @@ Commands
 Dependencies
 ------------
 None
+
