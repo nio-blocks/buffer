@@ -1,7 +1,7 @@
 {
   "nio/Buffer": {
     "version": "0.1.0",
-    "description": "The Buffer block will collect all incoming signals and emit them every **interval**. If **interval_duration** is non-zero, then the signal emitted each **interval** will be all the signals collected over the last **interval_duration**, not just since the last emit.",
+    "description": "The Buffer block will collect all incoming signals and emit them every **interval**. If **interval_duration** is non-zero, then the signal emitted each **interval** will be all the signals collected over the last **interval_duration**.",
     "categories": [
       "Signal Flow"
     ],
@@ -9,7 +9,7 @@
       "backup_interval": {
         "title": "Backup Interval",
         "type": "TimeDeltaType",
-        "description": "How often to save persisted data.",
+        "description": "An interval of time that specifies how often persisted data is saved.",
         "default": {
           "seconds": 3600
         }
@@ -17,7 +17,7 @@
       "group_by": {
         "title": "Group By",
         "type": "Type",
-        "description": "Signal attribute to define groupings of incoming signals.",
+        "description": "The signal attribute on the incoming signal whose values will be used to define groups on the outgoing signal.",
         "default": null
       },
       "interval": {
@@ -31,19 +31,19 @@
       "interval_duration": {
         "title": "Interval Duration",
         "type": "TimeDeltaType",
-        "description": "Each *interval* signals will emit going back this amount of time. If unspecifed or 0, then all input signals over the last **interval** will be emitted.",
+        "description": "At each **interval**, emit signals collected during this amount of time. If unspecifed or 0, then all input signals collected during the last **interval** will be emitted.",
         "default": null
       },
       "load_from_persistence": {
         "title": "Load from Persistence?",
         "type": "BoolType",
-        "description": "If *True*, the block's state will be saved at a block stoppage and reloaded upon restart.",
+        "description": "If `True`, the block’s state will be saved when the block is stopped and reloaded once the block is restarted.",
         "default": true
       },
       "signal_start": {
-        "title": "Start Interval On Signal?",
+        "title": "Start Interval on Signal?",
         "type": "BoolType",
-        "description": "Start the interval when a signal is received.",
+        "description": "If `True`, start the first interval when a signal is received.",
         "default": false
       }
     },
