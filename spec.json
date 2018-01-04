@@ -31,13 +31,13 @@
       "interval_duration": {
         "title": "Interval Duration",
         "type": "TimeDeltaType",
-        "description": "At each **interval**, emit signals collected during this amount of time. If unspecifed or 0, then all input signals collected during the last **interval** will be emitted.",
+        "description": "At each **interval**, emit signals collected during this amount of time. If unspecifed or 0, then all incoming signals collected during the last **interval** will be emitted.",
         "default": null
       },
       "load_from_persistence": {
         "title": "Load from Persistence?",
         "type": "BoolType",
-        "description": "If `True`, the block’s state will be saved when the block is stopped and reloaded once the block is restarted.",
+        "description": "If `True`, the block’s state will be saved when the block is stopped, and reloaded once the block is restarted.",
         "default": true
       },
       "signal_start": {
