@@ -14,7 +14,7 @@ from nio.command.params.string import StringParameter
 @command("emit", StringParameter("group", default=None, allow_none=True))
 class Buffer(Persistence, GroupBy, Block):
 
-    version = VersionProperty("0.1.0")
+    version = VersionProperty("0.1.1")
     signal_start = BoolProperty(title='Start Interval On Signal?',
                                 default=False)
     interval = TimeDeltaProperty(title='Buffer Interval',

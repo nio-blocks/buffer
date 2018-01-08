@@ -1,6 +1,6 @@
 {
   "nio/Buffer": {
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "The Buffer block will collect all incoming signals and emit them every **interval**. If **interval_duration** is non-zero, then the signal emitted each **interval** will be all the signals collected over the last **interval_duration**.",
     "categories": [
       "Signal Flow"
